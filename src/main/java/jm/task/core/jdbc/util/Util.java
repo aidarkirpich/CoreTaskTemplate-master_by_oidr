@@ -15,6 +15,7 @@ public class Util {
     private static final String dbUser = "root";
     private static final String dbPassword = "root";
     private static final String driver = "com.mysql.cj.jdbc.Driver";
+    private static SessionFactory sessionFactory;
     public Util() {
     }
     public static Connection connect() {
@@ -25,5 +26,21 @@ public class Util {
             System.out.println("Connect not possible" + e);
         }
         return conn;
+    }
+
+    public static SessionFactory getSessionFactory() {
+        if (sessionFactory == null) {
+            try {
+                Properties properties = new Properties();
+                properties.put(Environment.DRIVER, driver);
+                properties.put(Environment.URL, url);
+                properties.put(Environment.USER, dbUser);
+                properties.put(Environment.PASS, dbPassword);
+                sessionFactory = new Configuration().addAnnotatedClass(User.class).setProperties(properties).buildSessionFactory();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return sessionFactory;
     }
 }
